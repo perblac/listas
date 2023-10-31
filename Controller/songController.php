@@ -25,17 +25,19 @@ if (isset($_POST['createSong'])) {
     $data['mp3_file'] = $mp3file;
     $newSong = new Song($data);
     $id = SongRepository::saveSong($newSong);
+    $newSong->setId($id);
     if (isset($_SESSION['creandoLista'])) {
-        if (isset($_SESSION['songsIds'])) {
-            $songsIds = $_SESSION['songsIds'];
-        } else {
-            $songsIds = [];
-        }
-        $songsIds[] = $id;
-        $_SESSION['songsIds'] = $songsIds;
+        // if (isset($_SESSION['songsIds'])) {
+        //     $songsIds = $_SESSION['songsIds'];
+        // } else {
+        //     $songsIds = [];
+        // }
+        // $songsIds[] = $id;
+        // $_SESSION['songsIds'] = $songsIds;
+        $_SESSION['listaTemporal']->addSong($newSong);
         header('location: index.php?c=list');
     } else {
-        if (isset($_POST['idPlaylist'])) {
+        if ($_POST['idPlaylist'] > 0) {
             $id_playlist = $_POST['idPlaylist'];
             PlaylistRepository::addSongToPlaylist($id, $id_playlist);
         }

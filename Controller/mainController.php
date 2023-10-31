@@ -29,6 +29,10 @@ if (!empty($_GET['c'])) {
     //     require('Controller/searchController.php');
     // }
     require("Controller/".$_GET['c']."Controller.php");
+    if (isset($_SESSION['creandoLista'])) {
+        include('View/newListView.phtml');
+        die;
+    }
 } else {
     require('Controller/userController.php');
 }

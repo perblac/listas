@@ -13,6 +13,9 @@ class Song {
     public function getId() {
         return $this->id;
     }
+    public function setId($newId) {
+        $this->id =$newId;
+    }
     public function getTitle() {
         return $this->title;
     }

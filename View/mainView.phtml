@@ -17,24 +17,25 @@
             
             foreach ($lists as $list) {
                 echo '<div>';
-                echo '<h2><a href="index.php?c=list&full='.$list->getId().'">'.$list->getName().'</a>&nbsp;<a href="index.php?c=list&deleteList='.$list->getId().'">X</a></h2>';
-                echo '<h4>(canciones en la lista: '.sizeof($list->getSongs()).')</h4>';
-                $totalDuration = 0;
-                foreach ($list->getSongs() as $songId) {
-                        $song = SongRepository::getSongById($songId);
+                echo '<h2><a href="index.php?c=list&list='.$list->getId().'">'.$list->getName().'</a>&nbsp;<a href="index.php?c=list&deleteList='.$list->getId().'">X</a></h2>';
+                echo '<h4>(canciones en la lista: '.sizeof($list->getSongsIds()).')</h4>';
+                // $totalDuration = 0;
+                /*
+                foreach ($list->getSongsObjects() as $song) {
+                        // $song = SongRepository::getSongById($songId);
                         if ($song != null) {
                             // echo '<p>'.$song->getTitle().'<audio controls><source src="upload/'.$song->getMp3File().'" type="audio/mpeg"></audio></p>';
                             $totalDuration += $song->getDuration();
                         }
-                }
-                echo '<h4>(duración total: '.$totalDuration.')</h4>';
-                echo '<a href="index.php?c=list&addSong=1&list='.$list->getId().'">Añadir canción</a>';
+                }*/
+                echo '<h4>(duración total: '.PlaylistRepository::getPlaylistDuration($list->getId()).')</h4>';
+                // echo '<a href="index.php?c=list&addSong=1&list='.$list->getId().'">Añadir canción</a>';
                 echo '</div>';
             }
             
-            echo '<a href="index.php?c=list&createList=1">Crear nueva lista</a><br>';
+            echo '<br><a href="index.php?c=list&createList=1">Crear nueva lista</a><br>';
             echo '<a href="index.php?c=song&createSong=1">Crear nueva canción</a><br>';
-            echo '<a href="index.php?c=list&discardNewPlaylist=1">Desechar nueva lista</a><br>';
+            // echo '<a href="index.php?c=list&discardNewPlaylist=1">Desechar nueva lista</a><br>';
             echo '<a href="index.php?c=search">Buscador de canciones</a><br>';
         }
     ?>

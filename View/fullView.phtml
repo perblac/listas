@@ -8,23 +8,33 @@
 <body>
     <div class="container" style="background-color: #f2f2e2;">
         <?php
-            $list = PlaylistRepository::getListById($_GET['full']);
+            $list = PlaylistRepository::getListById($_GET['list']);
             echo '<div>';
             echo '<h2>Lista: '.$list->getName().'</h2>';
-            echo '<h4>(canciones en la lista: '.sizeof($list->getSongs()).')</h4><ul>';
-            $totalDuration = 0;
-            foreach ($list->getSongs() as $songId) {
-                    $song = SongRepository::getSongById($songId);
+            echo '<h4>(canciones en la lista: '.sizeof($list->getSongsIds()).')</h4><ul>';
+            // $totalDuration = 0;
+            $list->loadSongs();
+            foreach ($list->getSongsObjects() as $song) {
                     if ($song != null) {
                         $songDur = $song->getDuration();
                         $minDur = floor($songDur/60);
                         $segDur = $songDur % 60;
-                        echo '<li><p>'.$song->getTitle().' by: '.$song->getAuthor().'. Duración '.$minDur.':'.$segDur;
+                        $strMin = str_pad($minDur,2,'0',STR_PAD_LEFT);
+                        $strSeg = str_pad($segDur,2,'0',STR_PAD_LEFT);
+                        echo '<li><p>'.$song->getTitle().' by: '.$song->getAuthor().'. (Duración '.$strMin.':'.$strSeg.')';
+                        echo '<a href="index.php?c=list&remove='.$song->getId().'&idList='.$list->getId().'">X</a>';
                         echo '<audio controls style="height: 1em"><source src="upload/'.$song->getMp3File().'" type="audio/mpeg"></audio></p></li>';
-                        $totalDuration += $songDur;
                     }
             }
-            echo '</ul><h4>(duración total: '.$totalDuration.')</h4>';
+            echo '</ul><h4>(duración total: ';
+            $songDur = PlaylistRepository::getPlaylistDuration($list->getId());
+            $minDur = floor($songDur/60);
+            $segDur = $songDur % 60;
+            $strMin = str_pad($minDur,2,'0',STR_PAD_LEFT);
+            $strSeg = str_pad($segDur,2,'0',STR_PAD_LEFT);
+            echo $strMin.':'.$strSeg;
+            echo ')</h4>';            
+            echo '<a href="index.php?c=list&addSong=1&list='.$list->getId().'">Añadir canción</a><br>';
             echo '<a href="index.php">Cerrar</a>';
             echo '</div>';
         ?>

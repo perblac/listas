@@ -23,6 +23,7 @@
 
         <?php
             if (isset($songs)) {
+                echo sizeof($songs).' resultados:<br>';
                 $lists = PlaylistRepository::getListsByUser($_SESSION['user']->getId());
                 foreach ($songs as $song) {
                     echo ' - '.$song->getTitle().' by '.$song->getAuthor().' ('.$song->getDuration().' s.)';
@@ -30,6 +31,9 @@
                     echo '<input type="hidden" name="idSong" value="'.$song->getId().'">';
                     echo '<input type="submit" name="addSongToList" value="Añadir a lista:" >';
                     echo '<select name="idPlaylist">';
+                    if (isset($_SESSION['creandoLista'])) {
+                        echo '<option value = 0 >'.$_SESSION['listaTemporal']->getName().' (lista en creación)</option>';
+                    }
                     foreach ($lists as $list) {
                         echo '<option value = '.$list->getId().'>'.$list->getName().'</option>';
                     }

@@ -4,7 +4,7 @@ class SongRepository {
         $bd = Conectar::conexion();
 
         $songsIds = [];
-        $q = "SELECT * FROM `song-playlist` WHERE id_playlist = '".$id."'";
+        $q = "SELECT * FROM `song_playlist` WHERE id_playlist = '".$id."'";
         $result = $bd->query($q);
         while ($datos = $result->fetch_assoc()) {
             $songsIds[] = $datos['id_song'];
@@ -24,12 +24,21 @@ class SongRepository {
         } else
         return null;
     }
-
+/*
     public static function getIdByTitle($t) {
         $bd = Conectar::conexion();
 
         $q = "SELECT id FROM `song` WHERE title = '".$t."'";
         echo $q;
+        $result = $bd->query($q);
+        $datos = $result->fetch_array();
+        return $datos[0];
+    }
+*/
+    public static function getIdByTitleAndAuthor($title, $author) {
+        $bd = Conectar::conexion();
+
+        $q = "SELECT id FROM `song` WHERE title = '".$title."' AND author = '".$author."'";
         $result = $bd->query($q);
         $datos = $result->fetch_array();
         return $datos[0];
