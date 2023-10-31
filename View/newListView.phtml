@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear nueva lista</title>
+
+</head>
+<body>
+    <div class="container">
+        <form action="index.php?c=list" method="POST">
+            <label for="name">Nombre de la lista</label>
+            <input type="text" name="name" <?php if (isset($_POST['name'])) echo 'value="'.$_POST['name'].'"'; ?> required/><br>
+           
+        <?php
+            // var_dump($_SESSION);
+            if (isset($_SESSION['songsIds'])) { 
+                $songsIds = $_SESSION['songsIds'];
+            } else {
+                $_SESSION['songsIds'] = [];
+                $songsIds = $_SESSION['songsIds'];
+            }
+            foreach ($songsIds as $songId) {
+                $song = SongRepository::getSongById($songId);
+                echo '<p>'.$song->getTitle().'</p>';
+            }
+        ?>
+            <a href="index.php?c=song&createSong=1">Nueva canción</a>
+            <input type="submit" name="newlist" value="Crear esta lista">
+        </form><br>
+        
+        <a href="index.php">Volver</a>
+
+    </div>
+    
+</body>
+</html>

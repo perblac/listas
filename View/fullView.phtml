@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver lista de reproducción</title>
+</head>
+<body>
+    <div class="container" style="background-color: #f2f2e2;">
+        <?php
+            $list = PlaylistRepository::getListById($_GET['full']);
+            echo '<div>';
+            echo '<h2>Lista: '.$list->getName().'</h2>';
+            echo '<h4>(canciones en la lista: '.sizeof($list->getSongs()).')</h4><ul>';
+            $totalDuration = 0;
+            foreach ($list->getSongs() as $songId) {
+                    $song = SongRepository::getSongById($songId);
+                    if ($song != null) {
+                        $songDur = $song->getDuration();
+                        $minDur = floor($songDur/60);
+                        $segDur = $songDur % 60;
+                        echo '<li><p>'.$song->getTitle().' by: '.$song->getAuthor().'. Duración '.$minDur.':'.$segDur;
+                        echo '<audio controls style="height: 1em"><source src="upload/'.$song->getMp3File().'" type="audio/mpeg"></audio></p></li>';
+                        $totalDuration += $songDur;
+                    }
+            }
+            echo '</ul><h4>(duración total: '.$totalDuration.')</h4>';
+            echo '<a href="index.php">Cerrar</a>';
+            echo '</div>';
+        ?>
+    </div>
+    
+</body>
+</html>

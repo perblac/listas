@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador de canciones</title>
+</head>
+<body>
+    <div class="container">
+        <form action="index.php" method="GET">
+            <input type="hidden" name="c" value="search">
+            <input type="search" name="query" placeholder="escriba aqui su búsqueda" <?php echo 'value="'.(isset($_GET['query']) ? $_GET['query'] : '').'"'; ?> />
+            <input type="submit" value="Buscar">
+            <label for="campoTitle"><input type="radio" id="campoTitle" name="campo" value="title"
+            <?php
+                echo (!isset($_GET['campo']) || $_GET['campo'] == 'title') ? 'checked' : '';
+            ?> />busca por Titulo</label>
+            <label for="campoAuthor"><input type="radio" id="campoAuthor" name="campo" value="author"
+            <?php
+                echo (isset($_GET['campo']) && $_GET['campo'] == 'author') ? 'checked' : '';
+            ?> />busca por Autor</label>            
+        </form>
+
+        <?php
+            if (isset($songs)) {
+                $lists = PlaylistRepository::getListsByUser($_SESSION['user']->getId());
+                foreach ($songs as $song) {
+                    echo ' - '.$song->getTitle().' by '.$song->getAuthor().' ('.$song->getDuration().' s.)';
+                    echo '<form action="index.php?c=list" method="POST" style="display:inline">';
+                    echo '<input type="hidden" name="idSong" value="'.$song->getId().'">';
+                    echo '<input type="submit" name="addSongToList" value="Añadir a lista:" >';
+                    echo '<select name="idPlaylist">';
+                    foreach ($lists as $list) {
+                        echo '<option value = '.$list->getId().'>'.$list->getName().'</option>';
+                    }
+                    echo '</select>';
+                    echo '</form>';
+                    echo '<br>';
+                }
+            }
+        ?>
+
+    </div>
+    
+</body>
+</html>

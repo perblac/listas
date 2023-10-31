@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listas de Reproducción</title>
+</head>
+<body>
+<div class="container">
+    <?php
+
+        if (isset($_SESSION['user'])) {
+            echo "Usuario: ".$_SESSION['user']->getName()." Rol: ".$_SESSION['user']->getRol()."<br>";
+            echo '<a href="index.php?c=user&logout=1">LogOut</a><br>';
+
+            $lists = PlaylistRepository::getListsByUser($_SESSION['user']->getId());
+            
+            foreach ($lists as $list) {
+                echo '<div>';
+                echo '<h2><a href="index.php?c=list&full='.$list->getId().'">'.$list->getName().'</a>&nbsp;<a href="index.php?c=list&deleteList='.$list->getId().'">X</a></h2>';
+                echo '<h4>(canciones en la lista: '.sizeof($list->getSongs()).')</h4>';
+                $totalDuration = 0;
+                foreach ($list->getSongs() as $songId) {
+                        $song = SongRepository::getSongById($songId);
+                        if ($song != null) {
+                            // echo '<p>'.$song->getTitle().'<audio controls><source src="upload/'.$song->getMp3File().'" type="audio/mpeg"></audio></p>';
+                            $totalDuration += $song->getDuration();
+                        }
+                }
+                echo '<h4>(duración total: '.$totalDuration.')</h4>';
+                echo '<a href="index.php?c=list&addSong=1&list='.$list->getId().'">Añadir canción</a>';
+                echo '</div>';
+            }
+            
+            echo '<a href="index.php?c=list&createList=1">Crear nueva lista</a><br>';
+            echo '<a href="index.php?c=song&createSong=1">Crear nueva canción</a><br>';
+            echo '<a href="index.php?c=list&discardNewPlaylist=1">Desechar nueva lista</a><br>';
+            echo '<a href="index.php?c=search">Buscador de canciones</a><br>';
+        }
+    ?>
+</div>
+</body>
+</html>
