@@ -51,6 +51,10 @@ class Playlist {
         }
         $this->songsLoaded = true;
     }
+    public function unloadSongs() {
+        $this->songsObjects = [];
+        $this->songsLoaded = false;
+    }
     public function getLoadedStatus() {
         return $this->songsLoaded;
     }
@@ -62,6 +66,37 @@ class Playlist {
             }
         }
         // PlaylistRepository::addSongToPlaylist($song->getId(), $this->id);
+    }
+    public function getMp3List() {
+        $mp3list = [];
+        if (!$this->songsLoaded) {
+            $this->loadSongs();
+            $this->songsLoaded=false;
+        }
+        foreach ($this->songsObjects as $song) {
+            $filename = 'upload/'.$song->getMp3File();
+            $mp3list[] = $filename;
+        }
+        if (!$this->songsLoaded) {
+            $this->unloadSongs();
+        }
+        return $mp3list;
+    }
+    public function getMp3Objects() {
+        $mp3objects = [];
+        if (!$this->songsLoaded) {
+            $this->loadSongs();
+            $this->songsLoaded=false;
+        }
+        foreach ($this->songsObjects as $song) {
+            if ($song->getMp3File() !== '<no file>') {
+                $mp3objects[] = $song;
+            }
+        }
+        if (!$this->songsLoaded) {
+            $this->unloadSongs();
+        }
+        return $mp3objects;
     }
 }
 ?>

@@ -30,9 +30,23 @@ if (isset($_GET['discardNewPlaylist'])) {
     // unset($_SESSION['songsIds']);
 }
 
+if(isset($_GET['unfavList'])) {
+    PlaylistRepository::unfavPlaylist(PlaylistRepository::getListById($_GET['unfavList']), $_SESSION['user']);
+}
+
+if(isset($_GET['favList'])) {
+    PlaylistRepository::favPlaylist(PlaylistRepository::getListById($_GET['favList']), $_SESSION['user']);
+}
+
 if(isset($_GET['addSong'])) {
     include('View/addSongView.phtml');
     die;
+}
+
+if(isset($_GET['remove'])) {
+    if ($_SESSION['user']->getId() == PlaylistRepository::getListById($_GET['list'])->getCreator()) {
+        PlaylistRepository::removeSongFromPlaylist($_GET['remove'], $_GET['list']);
+    }
 }
 
 if(isset($_POST['addThisSong'])) {
@@ -91,6 +105,10 @@ if (isset($_SESSION['creandoLista'])) {
     die;
 }
 
+if (isset($_GET['explore'])) {
+    include('View/exploreView.phtml');
+    die;
+}
 
 if(isset($_GET['list'])) {
     include('View/fullView.phtml');

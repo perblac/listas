@@ -10,6 +10,7 @@ require_once('Model/SongClass.php');
 require_once('Model/SongRepository.php');
 require_once('Model/PlaylistClass.php');
 require_once('Model/PlaylistRepository.php');
+require_once('Model/ViewRepository.php');
 
 require_once('getid3/getid3.php');
 

@@ -15,7 +15,7 @@
             <label for="mp3file">Subir archivo<input type="file" name="mp3file" /><br></label>
             <?php 
             if (!isset($_SESSION['creandoLista'])) {
-                $lists = PlaylistRepository::getListsByUser($_SESSION['user']->getId());
+                $lists = PlaylistRepository::getListsByUser($_SESSION['user']);
                 if (sizeof($lists) > 0){
                     echo '<label for="idPlaylist">Añadir a lista:';
                     echo '<select name="idPlaylist">';

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listas de Reproducción</title>
+    <title>Explorar Listas de Reproducción</title>
 </head>
 <body>
 <div class="container">
@@ -13,23 +13,17 @@
 
             echo ViewRepository::printUserHeader($_SESSION['user']);
 
-            $lists = PlaylistRepository::getListsByUser($_SESSION['user']);
+            $lists = PlaylistRepository::getAllLists();
             
-            echo '<h3>Mis listas:</h3>';
             echo '<span style="display:flex">';
             echo ViewRepository::printPlaylists($lists);
             echo '</span>';
 
-            $favlists = PlaylistRepository::getFavoritedListsByUser($_SESSION['user']);
-            echo '<h3>Listas favoritas:</h3>';
-            echo '<span style="display:flex">';
-            echo ViewRepository::printPlaylists($favlists);
-            echo '</span>';
             echo '<br><a href="index.php?c=list&createList=1">Crear nueva lista</a><br>';
             echo '<a href="index.php?c=song&createSong=1">Crear nueva canción</a><br>';
             // echo '<a href="index.php?c=list&discardNewPlaylist=1">Desechar nueva lista</a><br>';
             echo '<a href="index.php?c=search">Buscador de canciones</a><br>';
-            echo '<a href="index.php?c=list&explore=1">Explorar playlists</a><br>';
+            echo '<a href="index.php">Volver</a><br>';
         }
     ?>
 </div>

@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ver lista de reproducción</title>
+    <style>        
+        .active a{color:#5DB0E6;text-decoration:none;}
+    </style>
 </head>
 <body>
     <div class="container" style="background-color: #f2f2e2;">
@@ -12,28 +15,21 @@
             echo '<div>';
             echo '<h2>Lista: '.$list->getName().'</h2>';
             echo '<h4>(canciones en la lista: '.sizeof($list->getSongsIds()).')</h4><ul>';
-            // $totalDuration = 0;
             $list->loadSongs();
             foreach ($list->getSongsObjects() as $song) {
-                    if ($song != null) {
-                        $songDur = $song->getDuration();
-                        $minDur = floor($songDur/60);
-                        $segDur = $songDur % 60;
-                        $strMin = str_pad($minDur,2,'0',STR_PAD_LEFT);
-                        $strSeg = str_pad($segDur,2,'0',STR_PAD_LEFT);
-                        echo '<li><p>'.$song->getTitle().' by: '.$song->getAuthor().'. (Duración '.$strMin.':'.$strSeg.')';
-                        echo '<a href="index.php?c=list&remove='.$song->getId().'&idList='.$list->getId().'">X</a>';
-                        echo '<audio controls style="height: 1em"><source src="upload/'.$song->getMp3File().'" type="audio/mpeg"></audio></p></li>';
+                    if ($song != null) {                        
+                        echo '<li><p>'.$song->getTitle().' by: '.$song->getAuthor().'. (Duración '.ViewRepository::printDuration($song->getDuration()).')';
+                        echo '<a href="index.php?c=list&remove='.$song->getId().'&list='.$list->getId().'">X</a>';
+                        if ($song->getMp3File() !== '<no file>') {
+                            echo '<audio controls style="height: 1em"><source src="upload/'.$song->getMp3File().'" type="audio/mpeg"></audio></p></li>';
+                        }
                     }
             }
             echo '</ul><h4>(duración total: ';
-            $songDur = PlaylistRepository::getPlaylistDuration($list->getId());
-            $minDur = floor($songDur/60);
-            $segDur = $songDur % 60;
-            $strMin = str_pad($minDur,2,'0',STR_PAD_LEFT);
-            $strSeg = str_pad($segDur,2,'0',STR_PAD_LEFT);
-            echo $strMin.':'.$strSeg;
-            echo ')</h4>';            
+            echo ViewRepository::printDuration(PlaylistRepository::getPlaylistDuration($list->getId()));
+            echo ')</h4>';
+            // echo PlaylistRepository::playFullList($list->getMp3List());
+            echo ViewRepository::printFullPlayback($list);
             echo '<a href="index.php?c=list&addSong=1&list='.$list->getId().'">Añadir canción</a><br>';
             echo '<a href="index.php">Cerrar</a>';
             echo '</div>';

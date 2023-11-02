@@ -3,16 +3,55 @@
 use PSpell\Config;
 
 class PlaylistRepository {
-    public static function getListsByUser($id) {
+    public static function getAllLists() {
         $bd = Conectar::conexion();
 
         $listas = [];
-        $q = "SELECT * FROM playlist WHERE user_id = '".$id."'";
+        $q = "SELECT * FROM playlist";
         
         $result=$bd->query($q);
         while ($datos = $result->fetch_assoc()) {
             if ($datos['deleted'] == 0) {
                 $listas[] = new Playlist($datos);
+            }
+        }
+        return $listas;
+    }
+
+    public static function getListsByUser($user) {
+        $bd = Conectar::conexion();
+
+        $listas = [];
+        $q = "SELECT * FROM playlist WHERE user_id = '".$user->getId()."'";
+        
+        $result=$bd->query($q);
+        while ($datos = $result->fetch_assoc()) {
+            if ($datos['deleted'] == 0) {
+                $listas[] = new Playlist($datos);
+            }
+        }
+        return $listas;
+    }
+    
+    public static function getFavoritedListsByUser($user) {
+        $bd = Conectar::conexion();
+
+        $favIds = [];
+        $q = "SELECT * FROM fav_playlist WHERE id_user = ".$user->getId();
+        $result=$bd->query($q);
+        while ($datos = $result->fetch_assoc()) {
+            $favIds[] = $datos['id_playlist'];
+        }
+
+        $listas = [];
+        foreach ($favIds as $id_playlist) {
+            $q = "SELECT * FROM playlist WHERE id = ".$id_playlist;
+            
+            $result=$bd->query($q);
+            while ($datos = $result->fetch_assoc()) {
+                if ($datos['deleted'] == 0) {
+                    $listas[] = new Playlist($datos);
+                }
             }
         }
         return $listas;
@@ -32,24 +71,6 @@ class PlaylistRepository {
         }
         return null;
     }
-
-    // public static function savePlaylist($name, $user_id, $songsIds) {
-    //     $bd = Conectar::conexion();
-
-    //     $q = "INSERT INTO playlist VALUES (NULL, '".$name."', ".$user_id.")";
-    //     $result=$bd->query($q);
-    //     $q = "SELECT id FROM playlist WHERE name = '".$name."' AND user_id = ".$user_id;
-    //     $result = $bd->query($q);
-    //     $datos = $result->fetch_array();
-    //     $playlistId = $datos[0];
-
-    //     foreach ($songsIds as $song_id) {
-    //         $q = "INSERT INTO `song_playlist` VALUES (".$song_id." ,".$playlistId." )";
-    //         $result = $bd->query($q);
-    //     }
-
-    //     return $playlistId;
-    // }
     
     public static function savePlaylist($playlist) {
         $bd = Conectar::conexion();
@@ -98,6 +119,16 @@ class PlaylistRepository {
         }
     }
 
+    public static function removeSongFromPlaylist($s,$pl) {
+        $bd = Conectar::conexion();
+        $q = "SELECT * FROM song_playlist WHERE id_song = ".$s." AND id_playlist = ".$pl;
+        $result = $bd->query($q);
+        if ($result->num_rows > 0) {
+            $q = "DELETE FROM song_playlist WHERE id_song = ".$s." AND id_playlist = ".$pl;
+            $result = $bd->query($q);
+        }
+    }
+
     public static function getPlaylistDuration($pl) {
         $bd = Conectar::conexion();
 
@@ -108,6 +139,32 @@ class PlaylistRepository {
             $duration += $datos['duration'];
         }
         return $duration;
+    }
+
+    public static function checkIfFavved($playlist, $user) {
+        $bd = Conectar::conexion();
+        $q = "SELECT * FROM fav_playlist WHERE id_user = ".$user->getId()." AND id_playlist = ".$playlist->getId();
+        $result=$bd->query($q);
+        if ($result->num_rows > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public static function unfavPlaylist($playlist, $user) {
+        if (PlaylistRepository::checkIfFavved($playlist, $user)) {
+            $bd = Conectar::conexion();
+            $q = "DELETE FROM fav_playlist WHERE id_user = ".$user->getId()." AND id_playlist = ".$playlist->getId();
+            $result=$bd->query($q);
+        }
+    }
+
+    public static function favPlaylist($playlist, $user) {
+        if (!PlaylistRepository::checkIfFavved($playlist, $user)) {
+            $bd = Conectar::conexion();
+            $q = "INSERT INTO fav_playlist VALUES (".$user->getId().", ".$playlist->getId().")";
+            $result=$bd->query($q);
+        }
     }
 }
 ?>

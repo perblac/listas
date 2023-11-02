@@ -24,7 +24,7 @@
         <?php
             if (isset($songs)) {
                 echo sizeof($songs).' resultados:<br>';
-                $lists = PlaylistRepository::getListsByUser($_SESSION['user']->getId());
+                $lists = PlaylistRepository::getListsByUser($_SESSION['user']);
                 foreach ($songs as $song) {
                     echo ' - '.$song->getTitle().' by '.$song->getAuthor().' ('.$song->getDuration().' s.)';
                     echo '<form action="index.php?c=list" method="POST" style="display:inline">';
