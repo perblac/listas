@@ -24,17 +24,7 @@ class SongRepository {
         } else
         return null;
     }
-/*
-    public static function getIdByTitle($t) {
-        $bd = Conectar::conexion();
-
-        $q = "SELECT id FROM `song` WHERE title = '".$t."'";
-        echo $q;
-        $result = $bd->query($q);
-        $datos = $result->fetch_array();
-        return $datos[0];
-    }
-*/
+    
     public static function getIdByTitleAndAuthor($title, $author) {
         $bd = Conectar::conexion();
 

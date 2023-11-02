@@ -2,7 +2,6 @@
 class Playlist {
     private $id,
             $name,
-            // $songs,
             $songsIds,
             $creator,
             $deleted,
@@ -12,7 +11,6 @@ class Playlist {
     {
         $this->id = $datos['id'];
         $this->name = $datos['name'];
-        // $this->songs = SongRepository::getIdsSongsInPlaylist($datos['id']);
         $this->songsIds = ($datos['id'] == 0)?[]:SongRepository::getIdsSongsInPlaylist($datos['id']);
         $this->creator = $datos['user_id'];
         $this->songsObjects = [];
@@ -30,8 +28,6 @@ class Playlist {
     public function setName($newName) {
         $this->name = $newName;
     }
-    // public function getSongs() {
-    //     return $this->songs;
     public function getSongsIds() {
         return $this->songsIds;
     }
@@ -65,7 +61,6 @@ class Playlist {
                 $this->songsObjects[] = $song;
             }
         }
-        // PlaylistRepository::addSongToPlaylist($song->getId(), $this->id);
     }
     public function getMp3List() {
         $mp3list = [];

@@ -1,7 +1,4 @@
 <?php
-
-use PSpell\Config;
-
 class PlaylistRepository {
     public static function getAllLists() {
         $bd = Conectar::conexion();
@@ -165,6 +162,18 @@ class PlaylistRepository {
             $q = "INSERT INTO fav_playlist VALUES (".$user->getId().", ".$playlist->getId().")";
             $result=$bd->query($q);
         }
+    }
+
+    public static function searchPlaylists($query) {
+        $bd = Conectar::conexion();
+
+        $playlists = [];
+        $q = "SELECT * FROM playlist WHERE name LIKE '%".$query."%'";
+        $result = $bd->query($q);
+        while ($datos = $result->fetch_assoc()) {
+            $playlists[] = new Playlist($datos);
+        }
+        return $playlists;
     }
 }
 ?>

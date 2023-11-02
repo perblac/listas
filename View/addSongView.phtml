@@ -7,12 +7,10 @@
 </head>
 <body>
     <?php
-    // echo var_dump($_GET);
     $list = PlaylistRepository::getListById($_GET['list']);
     echo '<div>';
     echo '<h2>'.$list->getName().'</h2>';
     echo '<h4>(canciones en la lista: '.sizeof($list->getSongsIds()).')</h4>';
-    // $totalDuration = 0;
     $list->loadSongs();
     foreach ($list->getSongsObjects() as $song) {
             if ($song != null) {

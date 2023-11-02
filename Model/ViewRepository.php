@@ -1,8 +1,14 @@
 <?php
 class ViewRepository {
     public static function printUserHeader($user) {
-        $s  = "Usuario: ".$user->getName()." Rol: ".$user->getRol()."<br>";
-        $s .= '<a href="index.php?c=user&logout=1">LogOut</a><br>';
+        $s  = "Bienvenido ".$user->getName()." <sub>(Rol: ".$user->getRol().")</sub><br>";
+        $s .= '<nav>';
+        $s .= '<a href="index.php">Home</a>';
+        $s .= '<a href="index.php?c=search&explore=1">Explorar playlists</a>';
+        $s .= '<a href="index.php?c=list&createList=1">Crear nueva lista</a>';
+        $s .= '<a href="index.php?c=song&createSong=1">Crear nueva canción</a>';
+        $s .= '<a href="index.php?c=user&logout=1">LogOut</a>';
+        $s .= '</nav>';
         return $s;
     }
 
@@ -13,7 +19,7 @@ class ViewRepository {
         $del = "␡";
         foreach ($playlists as $list) {
             $showDelete = $list->getCreator() == $_SESSION['user']->getId();            
-            $s .= '<div style="margin:2px;border:1px solid lightgray;'.(($showDelete)?'background-color:#e3f3e3;"':'background-color:#f3f0e3;"').'>';
+            $s .= '<div class="aPlaylist" style="margin:2px;width:fit-content;border:1px solid lightgray;'.(($showDelete)?'background-color:#e3f3e3;"':'background-color:#f3f0e3;"').'>';
             $s .= '<h2><a href="index.php?c=list&list='.$list->getId().'">'.$list->getName().'</a>';            
             if ($showDelete) {
                 $s .= '&nbsp;<a href="index.php?c=list&deleteList='.$list->getId().'">'.$del.'</a>';
@@ -27,6 +33,53 @@ class ViewRepository {
             $s .= '<h4>(canciones en la lista: '.sizeof($list->getSongsIds()).')</h4>';
             $s .= '<h4>(duración total: '.ViewRepository::printDuration(PlaylistRepository::getPlaylistDuration($list->getId())).')</h4>';
             $s .= '</div>';
+        }
+        return $s;
+    }
+
+    public static function printDetailedPlaylist($list) {
+        $showDelete = $list->getCreator() == $_SESSION['user']->getId();
+        $s = '<div>';
+        $s .= '<h2>Lista: '.$list->getName().'</h2>';
+        $s .= '<h3>creada por '.UserRepository::getUserById($list->getCreator())->getName().'</h3>';
+        $s .= '<h4>(canciones en la lista: '.sizeof($list->getSongsIds()).')</h4><ul>';
+        $list->loadSongs();
+        foreach ($list->getSongsObjects() as $song) {
+                if ($song != null) {                        
+                    $s .= '<li><p>'.$song->getTitle().' by: '.$song->getAuthor().'. (duración '.ViewRepository::printDuration($song->getDuration()).')';
+                    if ($showDelete) {
+                        $s .= '<a href="index.php?c=list&remove='.$song->getId().'&list='.$list->getId().'">X</a>';
+                    }
+                    if ($song->getMp3File() !== '<no file>') {
+                        $s .= '<audio controls style="height: 1em"><source src="upload/'.$song->getMp3File().'" type="audio/mpeg"></audio></p></li>';
+                    }
+                }
+        }
+        $s .= '</ul><h4>(duración total: ';
+        $s .= ViewRepository::printDuration(PlaylistRepository::getPlaylistDuration($list->getId()));
+        $s .= ')</h4>';
+        $s .= ViewRepository::printFullPlayback($list);
+        return $s;
+    }
+
+    public static function printSearchResults($songsList) {
+        $s = sizeof($songsList).' resultados:<br>';
+        $lists = PlaylistRepository::getListsByUser($_SESSION['user']);
+        foreach ($songsList as $song) {
+            $s .= ' - '.$song->getTitle().' <sub>by</sub> '.$song->getAuthor().' ('.ViewRepository::printDuration($song->getDuration()).' s.)';
+            $s .= '<form action="index.php?c=list" method="POST" style="display:inline">';
+            $s .= '<input type="hidden" name="idSong" value="'.$song->getId().'">';
+            $s .= '<input type="submit" name="addSongToList" value="Añadir a lista:" >';
+            $s .= '<select name="idPlaylist">';
+            if (isset($_SESSION['creandoLista'])) {
+                $s .= '<option value = 0 >'.$_SESSION['listaTemporal']->getName().' (lista en creación)</option>';
+            }
+            foreach ($lists as $list) {
+                $s .= '<option value = '.$list->getId().'>'.$list->getName().'</option>';
+            }
+            $s .= '</select>';
+            $s .= '</form>';
+            $s .= '<br>';
         }
         return $s;
     }

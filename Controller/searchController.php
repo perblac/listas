@@ -1,8 +1,14 @@
 <?php
 
 if (isset($_GET['query']) && $_GET['query'] != '' ) {
-    $songs = SongRepository::searchSongs($_GET['query'],$_GET['campo']);    
+    if ($_GET['campo'] !== 'playlist') {
+        $songs = SongRepository::searchSongs($_GET['query'],$_GET['campo']);
+    } else {
+        $playlists = PlaylistRepository::searchPlaylists($_GET['query']);
+    }
 }
 
-include('View/searchView.phtml');
+if (isset($_GET['explore'])) {
+    $playlists = PlaylistRepository::getAllLists();
+}
 ?>

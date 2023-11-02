@@ -1,9 +1,6 @@
 <?php
 
 if(isset($_POST['newlist'])) {
-    // $_SESSION['listaTemporal']->setName($_POST['name']);
-    // $creator = $_SESSION['user']->getId();
-    // $songsIds = $_SESSION['songsIds'];
     $listId = PlaylistRepository::savePlaylist($_SESSION['listaTemporal']);
     unset($_SESSION['listaTemporal']);
     unset($_SESSION['creandoLista']);
@@ -27,7 +24,6 @@ if (isset($_POST['saveName'])) {
 if (isset($_GET['discardNewPlaylist'])) {
     unset($_SESSION['creandoLista']);
     unset($_SESSION['listaTemporal']);
-    // unset($_SESSION['songsIds']);
 }
 
 if(isset($_GET['unfavList'])) {
@@ -50,11 +46,12 @@ if(isset($_GET['addSong'])) {
 if(isset($_GET['remove'])) {
     if ($_SESSION['user']->getId() == PlaylistRepository::getListById($_GET['list'])->getCreator()) {
         PlaylistRepository::removeSongFromPlaylist($_GET['remove'], $_GET['list']);
+    } else {
+        echo '<script>alert("Vd. no es el propietario de esta lista");</script>';
     }
 }
 
 if(isset($_POST['addThisSong'])) {
-    // var_dump($_POST);
     $id_playlist = $_GET['list'];
     if (PlaylistRepository::getListById(($id_playlist))->getCreator() == $_SESSION['user']->getId()) {
         // $id_song = $_POST['idSecreta']; // <- usando datalist sin id y javascript
@@ -92,31 +89,18 @@ if (isset($_POST['addSongToList'])) {
 }
 
 if (isset($_GET['createList'])) {
-    // if (!isset($_SESSION['creandoLista'])) {
-    //     // echo "lista limpia";
-    //     $_SESSION['creandoLista'] = 1;
-    //     $temp = [];
-    //     $temp['id'] = 0;
-    //     $temp['name'] = '';
-    //     $temp['user_id'] = $_SESSION['user']->getId();
-    //     $temp['deleted'] = 0;
-    //     $_SESSION['listaTemporal'] = new Playlist($temp);
-    // }
     include('View/newListView.phtml');
     die;
 }
 
 if (isset($_SESSION['creandoLista'])) {
-    
-    // var_dump($_POST);
     include('View/newListView.phtml');
     die;
 }
 
-if (isset($_GET['explore'])) {
-    include('View/exploreView.phtml');
-    // die;
-}
+// if (isset($_GET['explore'])) {
+//     include('View/exploreView.phtml');
+// }
 
 if(isset($_GET['list'])) {
     include('View/fullView.phtml');

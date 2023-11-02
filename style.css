@@ -1,0 +1,17 @@
+nav {
+    display:flex;
+}
+nav a {
+    display: inline-block;
+    text-decoration: none;
+    width: fit-content;
+    margin:3px;
+    padding: 3px;
+    background-color: #e3f3f3;
+}
+nav a:hover {
+    background-color: #f3e3e3;
+}
+.aPlaylist:hover {
+    background-color: #f3f3ff !important;
+}

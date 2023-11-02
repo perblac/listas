@@ -1,6 +1,4 @@
 <?php
-// var_dump($_SESSION);
-
 if (isset($_GET['logout'])) {
     session_destroy();
     session_start();

@@ -1,6 +1,5 @@
 <?php
 if (isset($_POST['createSong'])) {
-    // var_dump($_FILES);
     $title = $_POST['title'];
     $author = $_POST['author'];
     $duration = $_POST['duration'];
@@ -27,13 +26,6 @@ if (isset($_POST['createSong'])) {
     $id = SongRepository::saveSong($newSong);
     $newSong->setId($id);
     if (isset($_SESSION['creandoLista'])) {
-        // if (isset($_SESSION['songsIds'])) {
-        //     $songsIds = $_SESSION['songsIds'];
-        // } else {
-        //     $songsIds = [];
-        // }
-        // $songsIds[] = $id;
-        // $_SESSION['songsIds'] = $songsIds;
         $_SESSION['listaTemporal']->addSong($newSong);
         header('location: index.php?c=list');
     } else {

@@ -17,18 +17,6 @@ require_once('getid3/getid3.php');
 session_start();
 
 if (!empty($_GET['c'])) {
-    // if ($_GET['c'] = 'user') {
-    //     require('Controller/userController.php');
-    // }
-    // if ($_GET['c'] = 'list') {
-    //     require('Controller/listController.php');
-    // }
-    // if ($_GET['c'] = 'song') {
-    //     require('Controller/songController.php');
-    // }
-    // if ($_GET['c'] = 'search') {
-    //     require('Controller/searchController.php');
-    // }
     require("Controller/".$_GET['c']."Controller.php");
     if (isset($_SESSION['creandoLista'])) {
         include('View/newListView.phtml');
@@ -37,7 +25,6 @@ if (!empty($_GET['c'])) {
 } else {
     require('Controller/userController.php');
 }
-
 
 //usar modelos
 
