@@ -12,14 +12,18 @@
     <div class="container" style="background-color: #f2f2e2;">
         <?php
             $list = PlaylistRepository::getListById($_GET['list']);
+            $showDelete = $list->getCreator() == $_SESSION['user']->getId();
             echo '<div>';
             echo '<h2>Lista: '.$list->getName().'</h2>';
+            echo '<h3>creada por '.UserRepository::getUserById($list->getCreator())->getName().'</h3>';
             echo '<h4>(canciones en la lista: '.sizeof($list->getSongsIds()).')</h4><ul>';
             $list->loadSongs();
             foreach ($list->getSongsObjects() as $song) {
                     if ($song != null) {                        
-                        echo '<li><p>'.$song->getTitle().' by: '.$song->getAuthor().'. (Duración '.ViewRepository::printDuration($song->getDuration()).')';
-                        echo '<a href="index.php?c=list&remove='.$song->getId().'&list='.$list->getId().'">X</a>';
+                        echo '<li><p>'.$song->getTitle().' by: '.$song->getAuthor().'. (duración '.ViewRepository::printDuration($song->getDuration()).')';
+                        if ($showDelete) {
+                            echo '<a href="index.php?c=list&remove='.$song->getId().'&list='.$list->getId().'">X</a>';
+                        }
                         if ($song->getMp3File() !== '<no file>') {
                             echo '<audio controls style="height: 1em"><source src="upload/'.$song->getMp3File().'" type="audio/mpeg"></audio></p></li>';
                         }

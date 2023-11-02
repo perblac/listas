@@ -26,7 +26,7 @@
                 echo sizeof($songs).' resultados:<br>';
                 $lists = PlaylistRepository::getListsByUser($_SESSION['user']);
                 foreach ($songs as $song) {
-                    echo ' - '.$song->getTitle().' by '.$song->getAuthor().' ('.$song->getDuration().' s.)';
+                    echo ' - '.$song->getTitle().' <sub>by</sub> '.$song->getAuthor().' ('.ViewRepository::printDuration($song->getDuration()).' s.)';
                     echo '<form action="index.php?c=list" method="POST" style="display:inline">';
                     echo '<input type="hidden" name="idSong" value="'.$song->getId().'">';
                     echo '<input type="submit" name="addSongToList" value="Añadir a lista:" >';

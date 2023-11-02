@@ -30,5 +30,16 @@ class UserRepository
         $q = "INSERT INTO user VALUES(NULL, '".$user."', '".md5($password)."', 1);";
         $result = $bd->query($q);
     }
+
+    public static function getUserById($id_user) {
+        $bd = Conectar::conexion();
+
+        $q = "SELECT * FROM user WHERE id = " . $id_user;
+        $result = $bd->query($q);
+        if ($datos = $result->fetch_assoc()) {
+            return new User($datos);
+        }
+        return null;
+    }
 }
 ?>

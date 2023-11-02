@@ -6,24 +6,16 @@
     <title>Explorar Listas de Reproducción</title>
 </head>
 <body>
-<div class="container">
+<div class="container" style="background-color:#e3e3f3;">
     <?php
 
         if (isset($_SESSION['user'])) {
 
-            echo ViewRepository::printUserHeader($_SESSION['user']);
-
             $lists = PlaylistRepository::getAllLists();
             
-            echo '<span style="display:flex">';
+            echo '<span style="display:flex;flex-wrap:wrap">';
             echo ViewRepository::printPlaylists($lists);
             echo '</span>';
-
-            echo '<br><a href="index.php?c=list&createList=1">Crear nueva lista</a><br>';
-            echo '<a href="index.php?c=song&createSong=1">Crear nueva canción</a><br>';
-            // echo '<a href="index.php?c=list&discardNewPlaylist=1">Desechar nueva lista</a><br>';
-            echo '<a href="index.php?c=search">Buscador de canciones</a><br>';
-            echo '<a href="index.php">Volver</a><br>';
         }
     ?>
 </div>

@@ -13,6 +13,8 @@
 
             echo ViewRepository::printUserHeader($_SESSION['user']);
 
+            echo '<br><a href="index.php?c=list&explore=1">Explorar playlists</a><br>';
+
             $lists = PlaylistRepository::getListsByUser($_SESSION['user']);
             
             echo '<h3>Mis listas:</h3>';
@@ -29,7 +31,6 @@
             echo '<a href="index.php?c=song&createSong=1">Crear nueva canción</a><br>';
             // echo '<a href="index.php?c=list&discardNewPlaylist=1">Desechar nueva lista</a><br>';
             echo '<a href="index.php?c=search">Buscador de canciones</a><br>';
-            echo '<a href="index.php?c=list&explore=1">Explorar playlists</a><br>';
         }
     ?>
 </div>

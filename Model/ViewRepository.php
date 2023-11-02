@@ -8,16 +8,20 @@ class ViewRepository {
 
     public static function printPlaylists($playlists) {
         $s = '';
+        $unfav = "♡";
+        $fav ="♥";
+        $del = "␡";
         foreach ($playlists as $list) {
-            $s .= '<div style="margin:2px;border:1px solid lightgray;">';
-            $s .= '<h2><a href="index.php?c=list&list='.$list->getId().'">'.$list->getName().'</a>';
-            if ($list->getCreator() == $_SESSION['user']->getId()) {
-                $s .= '&nbsp;<a href="index.php?c=list&deleteList='.$list->getId().'">X</a>';
+            $showDelete = $list->getCreator() == $_SESSION['user']->getId();            
+            $s .= '<div style="margin:2px;border:1px solid lightgray;'.(($showDelete)?'background-color:#e3f3e3;"':'background-color:#f3f0e3;"').'>';
+            $s .= '<h2><a href="index.php?c=list&list='.$list->getId().'">'.$list->getName().'</a>';            
+            if ($showDelete) {
+                $s .= '&nbsp;<a href="index.php?c=list&deleteList='.$list->getId().'">'.$del.'</a>';
             }
             if (PlaylistRepository::checkIfFavved($list, $_SESSION['user'])) {
-                $s .= '&nbsp;<a href="index.php?c=list&unfavList='.$list->getId().'">-F</a>';
+                $s .= '&nbsp;<a href="index.php?c=list&unfavList='.$list->getId().'">'.$fav.'</a>';
             } else {
-                $s .= '&nbsp;<a href="index.php?c=list&favList='.$list->getId().'">+F</a>';
+                $s .= '&nbsp;<a href="index.php?c=list&favList='.$list->getId().'">'.$unfav.'</a>';
             }
             $s .= '</h2>';
             $s .= '<h4>(canciones en la lista: '.sizeof($list->getSongsIds()).')</h4>';
@@ -74,17 +78,17 @@ class ViewRepository {
                             e.preventDefault();
                             let clickedLink = this;
                             current = Array.prototype.indexOf.call(clickedLink.parentNode.parentNode.children, clickedLink.parentNode);
-                            console.log(current);
                             run(clickedLink, audio);
                         } );
                     }";
             $s .= "audio.addEventListener('ended', function(e) {
                         current++;
+                        let link = null;
                         if (current == tracks.length) {
                             current = 0;
-                            let link = playlist.getElementsByTagName('a')[0];
+                            link = playlist.getElementsByTagName('a')[0];
                         } else {
-                            let link = playlist.getElementsByTagName('a')[current];
+                            link = playlist.getElementsByTagName('a')[current];
                         }
                         run(link, audio);
                         });
