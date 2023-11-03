@@ -1,5 +1,5 @@
 body {
-    padding: 1vw;
+  padding: 1vw;
 }
 nav {
   display: flex;
@@ -15,12 +15,13 @@ nav a {
 nav a:hover {
   background-color: #f3e3e3;
 }
-a, a:visited {
-    color: black;
-    text-decoration: none;
+a,
+a:visited {
+  color: black;
+  text-decoration: none;
 }
 a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 .spanExplore {
   background-color: #f3f3f3;
@@ -133,7 +134,8 @@ h6 {
   display: inline;
   color: red;
 }
-.active a, .active a:visited {
-    color: red !important;
-    text-decoration: none;
+.active a,
+.active a:visited {
+  color: red !important;
+  text-decoration: none;
 }
