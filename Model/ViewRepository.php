@@ -56,7 +56,7 @@ class ViewRepository
             if ($song != null) {
                 $s .= '<li><p>' . $song->getTitle() . ' <sub>by</sub> ' . $song->getAuthor() . '. (duración ' . ViewRepository::printDuration($song->getDuration()) . ')';
                 if ($showDelete) {
-                    $s .= '<a href="index.php?c=list&remove=' . $song->getId() . '&list=' . $list->getId() . '">X</a>';
+                    $s .= '(<a href="index.php?c=list&remove=' . $song->getId() . '&list=' . $list->getId() . '">X</a>)';
                 }
                 if ($song->getMp3File() !== '<no file>') {
                     $s .= '<audio controls style="height: 1em"><source src="upload/' . $song->getMp3File() . '" type="audio/mpeg"></audio></p></li>';
