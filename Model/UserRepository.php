@@ -4,7 +4,6 @@ class UserRepository
     public static function checkLogin($user, $password)
     {
         $bd = Conectar::conexion();
-
         $q = "SELECT * FROM user WHERE name = '" . $user . "' AND password = '" . md5($password) . "';";
         $result = $bd->query($q);
         if ($datos = $result->fetch_assoc()) {
@@ -15,7 +14,6 @@ class UserRepository
 
     public static function checkUserExists($username) {
         $bd = Conectar::conexion();
-
         $q = "SELECT * FROM user WHERE name = '".$username."';";
         $result = $bd->query($q);
         if ($result->num_rows > 0) {
@@ -26,14 +24,12 @@ class UserRepository
 
     public static function registerUser($user, $password) {
         $bd = Conectar::conexion();
-
         $q = "INSERT INTO user VALUES(NULL, '".$user."', '".md5($password)."', 1);";
         $result = $bd->query($q);
     }
 
     public static function getUserById($id_user) {
         $bd = Conectar::conexion();
-
         $q = "SELECT * FROM user WHERE id = " . $id_user;
         $result = $bd->query($q);
         if ($datos = $result->fetch_assoc()) {

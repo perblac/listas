@@ -9,52 +9,54 @@
 </head>
 
 <body>
-    <?php 
+    <?php
     if (isset($_SESSION['user'])) {
+        /* -------------------------------- cabecera -------------------------------- */
         echo ViewRepository::printUserHeader($_SESSION['user']);
+        /* -------------------------------- buscador -------------------------------- */
     ?>
-    <div class="container-search">
-        <form action="index.php" method="GET">
-            <input type="hidden" name="c" value="search">
-            <input type="search" name="query" placeholder="escriba aqui su búsqueda" <?php echo 'value="'.(isset($_GET['query']) ? $_GET['query'] : '').'"'; ?> />
-            <input type="submit" value="Buscar">
-            <label for="campoTitle"><input type="radio" id="campoTitle" name="campo" value="title"
+        <div class="container-search">
+            <form action="index.php" method="GET">
+                <input type="hidden" name="c" value="search">
+                <input type="search" name="query" placeholder="escriba aqui su búsqueda" <?php echo 'value="' . (isset($_GET['query']) ? $_GET['query'] : '') . '"'; ?> />
+                <input type="submit" value="Buscar">
+                <label for="campoTitle"><input type="radio" id="campoTitle" name="campo" value="title" <?php
+                                                                                                        echo (!isset($_GET['campo']) || $_GET['campo'] == 'title') ? 'checked' : '';
+                                                                                                        ?> />busca por Titulo</label>
+                <label for="campoAuthor"><input type="radio" id="campoAuthor" name="campo" value="author" <?php
+                                                                                                            echo (isset($_GET['campo']) && $_GET['campo'] == 'author') ? 'checked' : '';
+                                                                                                            ?> />busca por Autor</label>
+                <label for="campoPlaylist"><input type="radio" id="campoPlaylist" name="campo" value="playlist" <?php
+                                                                                                                echo (isset($_GET['campo']) && $_GET['campo'] == 'playlist') ? 'checked' : '';
+                                                                                                                ?> />busca en playlists</label>
+            </form>
             <?php
-                echo (!isset($_GET['campo']) || $_GET['campo'] == 'title') ? 'checked' : '';
-            ?> />busca por Titulo</label>
-            <label for="campoAuthor"><input type="radio" id="campoAuthor" name="campo" value="author"
-            <?php
-                echo (isset($_GET['campo']) && $_GET['campo'] == 'author') ? 'checked' : '';
-            ?> />busca por Autor</label>
-            <label for="campoPlaylist"><input type="radio" id="campoPlaylist" name="campo" value="playlist"
-            <?php
-                echo (isset($_GET['campo']) && $_GET['campo'] == 'playlist') ? 'checked' : '';
-            ?> />busca en playlists</label>
-        </form>
-        <?php
-            }
-
             if (isset($songs)) {
                 echo ViewRepository::printSearchResults($songs);
             }
             if (isset($playlists)) {
-                echo sizeof($playlists).' resultados:<br>';
+                echo sizeof($playlists) . ' resultados:<br>';
                 echo '<span style="display:flex;flex-wrap:wrap">';
                 echo ViewRepository::printPlaylists($playlists);
                 echo '</span>';
             }
-        ?>
-
-    </div>
-    <div class="container">
-        <?php
-
-        if (isset($_SESSION['user'])) {
-
-            // echo ViewRepository::printUserHeader($_SESSION['user']);
-
-            // echo '<br><a href="index.php?c=list&explore=1">Explorar playlists</a><br>';
-
+            ?>
+        </div>
+        <div class="container">
+            <?php
+            /* ------------------------ explorar todas las listas ----------------------- */
+            if (isset($_GET['explore'])){
+                $lists = PlaylistRepository::getAllLists();
+                echo '<a class="derecha" href="index.php">X</a>';
+                echo '<span class="spanExplore">';
+                echo ViewRepository::printPlaylists($lists);
+                echo '</span>';
+            }
+            ?>
+        </div>
+        <div class="container">
+            <?php
+            /* ----------------------- listas propias y favoritas ----------------------- */
             $lists = PlaylistRepository::getListsByUser($_SESSION['user']);
 
             echo '<h3>Mis listas:</h3>';
@@ -67,11 +69,108 @@
             echo '<span style="display:flex;flex-wrap:wrap">';
             echo ViewRepository::printPlaylists($favlists);
             echo '</span>';
-            // echo '<br><a href="index.php?c=list&createList=1">Crear nueva lista</a><br>';
-            // echo '<a href="index.php?c=song&createSong=1">Crear nueva canción</a><br>';
-        }
+            ?>
+        </div>
+        <?php
+        /* ----------------------------- vista detallada ---------------------------- */
+        if (isset($_GET['list']) && isset($_GET['c']) && $_GET['c'] == 'list') {
         ?>
-    </div>
+            <div class="background">
+                <div class="fullView">
+                    <?php
+                    $list = PlaylistRepository::getListById($_GET['list']);
+                    if ($list !== null) {
+                        echo '<a href="index.php" class="derecha">X</a>';
+                        echo ViewRepository::printDetailedPlaylist($list);
+                    }
+                    ?>
+                </div>
+            </div>
+        <?php
+        }
+        /* ------------------------------- crear lista ------------------------------ */
+        if (isset($_GET['createList']) || isset($_SESSION['creandoLista'])) {
+        ?>
+            <div class="background">
+                <div class="crearLista">
+                    <a class="derecha" href="index.php?c=list&discardNewPlaylist=1">X</a>
+                    <form action="index.php?c=list" method="POST">
+                        <label for="name">Nombre de la lista</label>
+                        <input type="text" id="nameField" name="name" <?php if (isset($_SESSION['listaTemporal'])) echo 'value="' . $_SESSION['listaTemporal']->getName() . '"'; ?> required />
+                        <br>
+                        <?php
+                        if (isset($_SESSION['creandoLista'])) {
+                            echo '<input type="submit" name="saveName" value="Cambiar nombre">';
+                        } else {
+                            echo '<input type="submit" name="saveName" value="Confirmar nombre">';
+                        }
+                        ?>
+                    </form>
+                    <br>
+                    <?php if (isset($_SESSION['creandoLista'])) {
+                    ?>
+                        <form action="index.php?c=list" method="POST">
+                            <?php
+                            if (isset($_SESSION['listaTemporal'])) {
+                                $list = $_SESSION['listaTemporal'];
+                                $list->loadSongs();
+                                foreach ($list->getSongsObjects() as $song) {
+                                    if ($song != null) {
+                                        echo '<p>' . $song->getTitle() . '</p>';
+                                    }
+                                }
+                            }
+                            ?>
+                            <a href="index.php?c=song&createSong=1">Nueva canción</a><br>
+                            <input type="submit" name="newlist" value="Guardar esta lista">
+                        </form>
+                    <?php
+                    }
+                    ?>
+                </div>
+            </div>
+        <?php
+        }
+        /* ------------------------------ crear cancion ----------------------------- */
+        if (isset($_GET['createSong'])) {
+        ?>
+        <div class="background">
+            <div class="crearCancion">
+                <a class="derecha" href="index.php?c=list">X</a>
+                <h1>Crear una nueva canción:</h1>
+                <form action="index.php?c=song" method="POST" enctype="multipart/form-data">
+                    <label for="title">Título<input type="text" name="title" required /><br></label>
+                    <label for="author">Autor<input type="text" name="author" required /><br></label>
+                    <label for="duration">Duracion<input type="number" name="duration" value="0" /><br></label>
+                    <label for="mp3file">Subir archivo<input type="file" name="mp3file" /><br></label>
+                    <?php
+                    if (!isset($_SESSION['creandoLista'])) {
+                        $lists = PlaylistRepository::getListsByUser($_SESSION['user']);
+                        if (sizeof($lists) > 0) {
+                            echo '<label for="idPlaylist">Añadir a lista:';
+                            echo '<select name="idPlaylist">';
+                            foreach ($lists as $list) {
+                                echo '<option value = ' . $list->getId() . '>' . $list->getName() . '</option>';
+                            }
+                            echo '</select></label><br>';
+                        }
+                    } else {
+                        echo '<input type="hidden" name="idPlaylist" value="0" />';
+                    }
+                    ?>
+                    <input type="submit" name="createSong" value="Crear esta canción">
+                </form>
+            </div>
+        </div>
+    <?php
+        }
+        /* -------------------- añadir cancion de las existentes -------------------- */
+        if (isset($_GET['addSong'])) {
+            $list = PlaylistRepository::getListById($_GET['list']);
+            echo ViewRepository::printAddSongToPlaylist($list);
+        }
+    }
+    ?>
 </body>
 
 </html>

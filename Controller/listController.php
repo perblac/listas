@@ -6,15 +6,17 @@ if(isset($_POST['newlist'])) {
     unset($_SESSION['creandoLista']);
 }
 
-if (isset($_POST['saveName'])) {    
+if (isset($_POST['saveName'])) {
     if (!isset($_SESSION['creandoLista'])) {
         $_SESSION['creandoLista'] = 1;
+
         $temp = [];
         $temp['id'] = 0;
         $temp['name'] = '';
         $temp['user_id'] = $_SESSION['user']->getId();
         $temp['deleted'] = 0;
         $_SESSION['listaTemporal'] = new Playlist($temp);
+
         $_SESSION['listaTemporal']->setName($_POST['name']);
     } else {
         $_SESSION['listaTemporal']->setName($_POST['name']);
@@ -22,8 +24,8 @@ if (isset($_POST['saveName'])) {
 }
 
 if (isset($_GET['discardNewPlaylist'])) {
-    unset($_SESSION['creandoLista']);
     unset($_SESSION['listaTemporal']);
+    unset($_SESSION['creandoLista']);
 }
 
 if(isset($_GET['unfavList'])) {
@@ -32,15 +34,6 @@ if(isset($_GET['unfavList'])) {
 
 if(isset($_GET['favList'])) {
     PlaylistRepository::favPlaylist(PlaylistRepository::getListById($_GET['favList']), $_SESSION['user']);
-}
-
-if(isset($_GET['addSong'])) {
-    if ($_SESSION['user']->getId() == PlaylistRepository::getListById($_GET['list'])->getCreator()) {
-        include('View/addSongView.phtml');
-        die;
-    } else {
-        echo '<script>alert("Vd. no es el propietario de esta lista");</script>';
-    }
 }
 
 if(isset($_GET['remove'])) {
@@ -54,7 +47,6 @@ if(isset($_GET['remove'])) {
 if(isset($_POST['addThisSong'])) {
     $id_playlist = $_GET['list'];
     if (PlaylistRepository::getListById(($id_playlist))->getCreator() == $_SESSION['user']->getId()) {
-        // $id_song = $_POST['idSecreta']; // <- usando datalist sin id y javascript
         /* ------------------ parseando string dividida con unicode ----------------- */
         $strigToParse = $_POST['idSong'];
         $unicodeChar = "\u{200B}";
@@ -65,7 +57,9 @@ if(isset($_POST['addThisSong'])) {
             $id_song = SongRepository::getIdByTitleAndAuthor($title, $author);
         }
         /* ------------------------------- hasta aqui ------------------------------- */
-        PlaylistRepository::addSongToPlaylist($id_song, $id_playlist);
+        if ($id_song !== null) {
+            PlaylistRepository::addSongToPlaylist($id_song, $id_playlist);
+        }
     }
 }
 
@@ -86,24 +80,6 @@ if (isset($_POST['addSongToList'])) {
         else
         PlaylistRepository::addSongToPlaylist($id_song, $id_playlist);
     }
-}
-
-if (isset($_GET['createList'])) {
-    include('View/newListView.phtml');
-    die;
-}
-
-if (isset($_SESSION['creandoLista'])) {
-    include('View/newListView.phtml');
-    die;
-}
-
-// if (isset($_GET['explore'])) {
-//     include('View/exploreView.phtml');
-// }
-
-if(isset($_GET['list'])) {
-    include('View/fullView.phtml');
 }
 
 ?>

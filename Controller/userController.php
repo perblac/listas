@@ -28,8 +28,9 @@ if (isset($_GET['registroFrm'])) {
     die;
 }
 
-
 if (!isset($_SESSION['user']) && !isset($_GET['registroFrm'])) {
     include('View/loginView.phtml');
     die;
 }
+
+?>

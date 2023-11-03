@@ -1,29 +1,12 @@
 <?php
 if (isset($_POST['createSong'])) {
-    $title = $_POST['title'];
-    $author = $_POST['author'];
-    $duration = $_POST['duration'];
-    $creator = $_SESSION['user']->getId();
     if (isset($_FILES['mp3file']) && $_FILES['mp3file']['size'] > 0) {
-        $directory = 'upload/';
-        $filename = $directory . basename($_FILES['mp3file']['name']);
-        $mp3file = $_FILES['mp3file']['name'];
-        move_uploaded_file($_FILES['mp3file']['tmp_name'], $filename);
-        $getID3 = new getID3;
-        $mp3song = $getID3->analyze($filename);
-        $duration = $mp3song['playtime_seconds'];
+        $files = $_FILES;
     } else {
-        $mp3file = "<no file>";
+        $files = null;
     }
-    $data = [];
-    $data['id'] = null;
-    $data['title'] = $title;
-    $data['author'] = $author;
-    $data['duration'] = $duration;
-    $data['user_id'] = $creator;
-    $data['mp3_file'] = $mp3file;
-    $newSong = new Song($data);
-    $id = SongRepository::saveSong($newSong);
+    $newSong = SongRepository::addSong($_POST,$files);
+    $id = $newSong->saveSong();
     $newSong->setId($id);
     if (isset($_SESSION['creandoLista'])) {
         $_SESSION['listaTemporal']->addSong($newSong);
@@ -34,11 +17,6 @@ if (isset($_POST['createSong'])) {
             PlaylistRepository::addSongToPlaylist($id, $id_playlist);
         }
     }
-}
-
-if (isset($_GET['createSong'])) {
-    include('View/newSongView.phtml');
-    die;
 }
 
 ?>

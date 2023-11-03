@@ -7,6 +7,7 @@ class Playlist {
             $deleted,
             $songsObjects,
             $songsLoaded = false;
+
     public function __construct($datos)
     {
         $this->id = $datos['id'];
@@ -16,18 +17,21 @@ class Playlist {
         $this->songsObjects = [];
         $this->deleted = $datos['deleted'];
     }
+
     public function getId() {
         return $this->id;
     }
     public function setId($newId) {
         $this->id = $newId;
     }
+
     public function getName() {
         return $this->name;
     }
     public function setName($newName) {
         $this->name = $newName;
     }
+
     public function getSongsIds() {
         return $this->songsIds;
     }
@@ -40,6 +44,7 @@ class Playlist {
     public function getSongsObjects() {
         return $this->songsObjects;
     }
+
     public function loadSongs() {
         $this->songsObjects = [];
         foreach ($this->songsIds as $id) {
@@ -54,6 +59,7 @@ class Playlist {
     public function getLoadedStatus() {
         return $this->songsLoaded;
     }
+
     public function addSong($song) {
         if ($song != null){
             $this->songsIds[] = $song->getId();
@@ -62,6 +68,7 @@ class Playlist {
             }
         }
     }
+
     public function getMp3List() {
         $mp3list = [];
         if (!$this->songsLoaded) {

@@ -1,17 +1,125 @@
 nav {
-    display:flex;
+  display: flex;
 }
 nav a {
-    display: inline-block;
-    text-decoration: none;
-    width: fit-content;
-    margin:3px;
-    padding: 3px;
-    background-color: #e3f3f3;
+  display: inline-block;
+  text-decoration: none;
+  width: fit-content;
+  margin: 3px;
+  padding: 3px;
+  background-color: #e3f3f3;
 }
 nav a:hover {
-    background-color: #f3e3e3;
+  background-color: #f3e3e3;
+}
+.spanExplore {
+  background-color: #f3f3f3;
+  width: fit-content;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.aPlaylist,
+.aPlaylistFav {
+  padding: 5px;
+  margin: 2px;
+  width: fit-content;
+  border: 1px solid lightgray;
+}
+.aPlaylist {
+  background-color: #e3f3e3;
+}
+.aPlaylistFav {
+  background-color: #f3f0e3;
 }
 .aPlaylist:hover {
-    background-color: #f3f3ff !important;
+  background-color: #f3fff3;
+}
+.aPlaylistFav:hover {
+  background-color: #fff0e3;
+}
+.aPlaylist a,
+.aPlaylistFav a {
+  padding: 2px;
+  text-decoration: none;
+}
+.aPlaylist a:hover,
+.aPlaylistFav a:hover {
+  text-decoration: dotted;
+  background-color: #f3e3e3;
+}
+.aPlaylist h2,
+.aPlaylistFav h2 {
+  width: max-content;
+  margin: auto;
+}
+.background {
+  display: flex;
+  width: 100%;
+  min-height: 100%;
+  height: 100%;
+  overflow: overlay;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.fullView,
+.crearLista,
+.crearCancion,
+.addSong {
+  padding: 1em;
+}
+.fullView {
+  background-color: #f2f2e2;
+  width: 75vw;
+  min-height: fit-content;
+  margin: auto;
+}
+.fullView h2,
+.fullView h3,
+.fullView h4 {
+  margin: 2px auto;
+}
+.headDetalle {
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px dotted black;
+}
+.crearLista,
+.crearCancion,
+.addSong {
+  background-color: #f2f2e2;
+  display: block;
+  min-height: fit-content;
+  width: fit-content;
+  margin: auto;
+}
+.crearCancion form input,
+.crearCancion form label,
+.crearLista form input,
+.crearLista form label {
+  margin: 5px;
+}
+.derecha {
+  float: right;
+}
+.listaCompletaPlayer {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  margin: 5px auto;
+  width: fit-content;
+  padding: 5px;
+}
+h6 {
+  display: block;
+  margin: 2px auto;
+  width: fit-content;
+}
+.fav,
+.fav:visited,
+.fav:active {
+  display: inline;
+  color: red;
 }

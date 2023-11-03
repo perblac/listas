@@ -2,10 +2,8 @@
 class PlaylistRepository {
     public static function getAllLists() {
         $bd = Conectar::conexion();
-
         $listas = [];
-        $q = "SELECT * FROM playlist";
-        
+        $q = "SELECT * FROM playlist";        
         $result=$bd->query($q);
         while ($datos = $result->fetch_assoc()) {
             if ($datos['deleted'] == 0) {
@@ -17,10 +15,8 @@ class PlaylistRepository {
 
     public static function getListsByUser($user) {
         $bd = Conectar::conexion();
-
         $listas = [];
-        $q = "SELECT * FROM playlist WHERE user_id = '".$user->getId()."'";
-        
+        $q = "SELECT * FROM playlist WHERE user_id = ".$user->getId();       
         $result=$bd->query($q);
         while ($datos = $result->fetch_assoc()) {
             if ($datos['deleted'] == 0) {
@@ -32,18 +28,15 @@ class PlaylistRepository {
     
     public static function getFavoritedListsByUser($user) {
         $bd = Conectar::conexion();
-
         $favIds = [];
         $q = "SELECT * FROM fav_playlist WHERE id_user = ".$user->getId();
         $result=$bd->query($q);
         while ($datos = $result->fetch_assoc()) {
             $favIds[] = $datos['id_playlist'];
         }
-
         $listas = [];
         foreach ($favIds as $id_playlist) {
-            $q = "SELECT * FROM playlist WHERE id = ".$id_playlist;
-            
+            $q = "SELECT * FROM playlist WHERE id = ".$id_playlist;            
             $result=$bd->query($q);
             while ($datos = $result->fetch_assoc()) {
                 if ($datos['deleted'] == 0) {
@@ -54,12 +47,10 @@ class PlaylistRepository {
         return $listas;
     }
 
-    public static function getListById($id) : Playlist {
+    public static function getListById($id) {
         $bd = Conectar::conexion();
-
-        $q = "SELECT * FROM playlist WHERE id = '".$id."'";
-        
-        $result=$bd->query($q);
+        $q = "SELECT * FROM playlist WHERE id = ".$id;
+        $result = $bd->query($q);
         if ($datos = $result->fetch_assoc()) {
             if ($datos['deleted'] == 0) {
                 $lista = new Playlist($datos);
@@ -68,31 +59,24 @@ class PlaylistRepository {
         }
         return null;
     }
-    
+
     public static function savePlaylist($playlist) {
         $bd = Conectar::conexion();
-
         $q = "INSERT INTO playlist VALUES (NULL, '".$playlist->getName()."', ".$playlist->getCreator().", 0)";
         $result=$bd->query($q);
-        $q = "SELECT id FROM playlist WHERE name = '".$playlist->getName()."' AND user_id = ".$playlist->getCreator();
-        $result = $bd->query($q);
-        $datos = $result->fetch_array();
-        $playlistId = $datos[0];
+        $playlistId = $bd->insert_id;
         $playlist->setId($playlistId);
-
         foreach ($playlist->getSongsIds() as $song_id) {
             if (!PlaylistRepository::checkSongInPlaylist($song_id,$playlist->getId())) {
-                $q = "INSERT INTO `song_playlist` VALUES (".$song_id." ,".$playlist->getId()." )";
+                $q = "INSERT INTO song_playlist VALUES (".$song_id." ,".$playlist->getId()." )";
                 $result = $bd->query($q);
             }
         }
-
         return $playlistId;
     }
 
     public static function checkSongInPlaylist($id_song, $id_playlist) {
         $bd = Conectar::conexion();
-
         $q = "SELECT * FROM song_playlist WHERE id_song = ".$id_song." AND id_playlist = ".$id_playlist;
         $result = $bd->query(($q));
         if ($result->num_rows > 0) return true;
@@ -101,16 +85,13 @@ class PlaylistRepository {
 
     public static function deletePlaylist($id) {
         $bd = Conectar::conexion();
-
         $q = "UPDATE playlist SET deleted = 1 WHERE id = ".$id;
         $result = $bd->query($q);
     }
 
     public static function addSongToPlaylist($s,$pl) {
         $bd = Conectar::conexion();
-        $q = "SELECT * FROM `song_playlist` WHERE id_song = ".$s." AND id_playlist = ".$pl;
-        $result = $bd->query($q);
-        if ($result->num_rows == 0) {
+        if (!PlaylistRepository::checkSongInPlaylist($s,$pl)) {
             $q = "INSERT INTO `song_playlist` VALUES (".$s.", ".$pl.")";
             $result = $bd->query($q);
         }
@@ -166,12 +147,13 @@ class PlaylistRepository {
 
     public static function searchPlaylists($query) {
         $bd = Conectar::conexion();
-
         $playlists = [];
         $q = "SELECT * FROM playlist WHERE name LIKE '%".$query."%'";
         $result = $bd->query($q);
         while ($datos = $result->fetch_assoc()) {
-            $playlists[] = new Playlist($datos);
+            if ($datos['deleted'] == 0) {
+                $playlists[] = new Playlist($datos);
+            }
         }
         return $playlists;
     }
