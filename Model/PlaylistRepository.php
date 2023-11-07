@@ -129,6 +129,13 @@ class PlaylistRepository {
         return false;
     }
 
+    public static function countFavved($playlist) {
+        $bd = Conectar::conexion();
+        $q = "SELECT * FROM fav_playlist WHERE  id_playlist = ".$playlist->getId();
+        $result=$bd->query($q);
+        return $result->num_rows;
+    }
+
     public static function unfavPlaylist($playlist, $user) {
         if (PlaylistRepository::checkIfFavved($playlist, $user)) {
             $bd = Conectar::conexion();
@@ -156,6 +163,41 @@ class PlaylistRepository {
             }
         }
         return $playlists;
+    }
+
+    public static function clonePlaylist($playlist) {
+        if ($_SESSION['user']->getId() != $playlist->getCreator()) {
+            $playlist->setCreator($_SESSION['user']->getId());
+            $id_original = $playlist->getId();
+            $id_clon = PlaylistRepository::savePlaylist($playlist);
+            PlaylistRepository::addCloned($id_original, $id_clon);
+        }
+    }
+
+    public static function checkIfIsClon($id_playlist_original, $id_playlist_clon) {
+        $bd = Conectar::conexion();
+        $q = "SELECT * FROM cloned_playlist WHERE id_playlist_original = ".$id_playlist_original." AND id_playlist_clon = ".$id_playlist_clon;
+        $result=$bd->query($q);
+        if ($result->num_rows > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public static function addCloned($id_playlist_original, $id_playlist_clon) {
+        if (!PlaylistRepository::checkIfIsClon($id_playlist_original, $id_playlist_clon)) {
+            $bd = Conectar::conexion();
+            $q = "INSERT INTO cloned_playlist VALUES (".$id_playlist_original.", ".$id_playlist_clon.")";
+            $result=$bd->query($q);
+        }
+    }
+
+    public static function getNumberOfClones($playlist) {
+        $bd = Conectar::conexion();
+        $q = "SELECT COUNT(*) FROM cloned_playlist JOIN playlist ON cloned_playlist.id_playlist_clon = playlist.id WHERE id_playlist_original = ".$playlist->getId()." AND deleted = 0";
+        $result = $bd->query($q);
+        $dato = $result->fetch_array();
+        return $dato[0];
     }
 }
 ?>

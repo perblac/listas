@@ -71,5 +71,22 @@ class SongRepository {
         $newSong = new Song($datos);
         return $newSong;
     }
+
+    public static function editSong($song,$files) {
+        if ($files != null) {
+            $directory = 'upload/';
+            $filename = $directory . basename($files['mp3file']['name']);
+            $mp3file = $_FILES['mp3file']['name'];
+            move_uploaded_file($files['mp3file']['tmp_name'], $filename);
+            $getID3 = new getID3;
+            $mp3song = $getID3->analyze($filename);
+            $song->setDuration($mp3song['playtime_seconds']);
+            $song->setMp3File($mp3file);
+        }
+        $bd = Conectar::conexion();
+        $q = "UPDATE song SET title = '".$song->getTitle()."', author = '".$song->getAuthor()."', duration = ".$song->getDuration().", mp3_file = '".$song->getMp3File()."' WHERE id = ".$song->getId();
+        echo $q;
+        $result = $bd->query($q);
+    }
 }
 ?>

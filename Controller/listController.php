@@ -82,4 +82,12 @@ if (isset($_POST['addSongToList'])) {
     }
 }
 
+if (isset($_GET['clon'])) {
+    $id_playlist = $_GET['clon'];
+    $list = PlaylistRepository::getListById($id_playlist);
+    if ($_SESSION['user']->getId() != $list->getCreator()) {
+        PlaylistRepository::clonePlaylist($list);
+    }
+}
+
 ?>

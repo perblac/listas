@@ -19,4 +19,22 @@ if (isset($_POST['createSong'])) {
     }
 }
 
+if (isset($_POST['editSong'])) {
+    if (isset($_FILES['mp3file']) && $_FILES['mp3file']['size'] > 0) {
+        $files = $_FILES;
+    } else {
+        $files = null;
+    }
+    $song = SongRepository::getSongById($_POST['id']);
+    $song->setTitle($_POST['title']);
+    $song->setAuthor($_POST['author']);
+    $song->setDuration($_POST['duration']);
+    SongRepository::editSong($song,$files);
+}
+
+if (isset($_GET['editSongs']) && $_SESSION['user']->getRol() > 1) {
+    include ('View/editSongsView.phtml');
+    die;
+}
+
 ?>

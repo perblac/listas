@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styleEdit.css">
+    <title>Editar Canciones</title>
+
+</head>
+
+<body>
+    <?php
+    if (isset($_SESSION['user']) && $_SESSION['user']->getRol() > 1) {
+    ?>
+        <a href="index.php">Volver</a><br>
+        <?php
+
+        if (isset($_GET['edit'])) {
+            $song = SongRepository::getSongById($_GET['edit']);
+        ?>
+            <div class="background">
+                <div class="editarCancion">
+                    <a class="derecha" href="index.php?c=song&editSongs=1">X</a>
+                    <h1>Editar canción:</h1>
+                    <form action="index.php?c=song&editSongs=1" method="POST" enctype="multipart/form-data">
+                        <label for="title">Título<input type="text" name="title" <?php
+                                                                                    echo 'value="';
+                                                                                    echo $song->getTitle();
+                                                                                    echo '" ';
+                                                                                    ?> required /><br></label>
+                        <label for="author">Autor<input type="text" name="author" <?php
+                                                                                    echo 'value="';
+                                                                                    echo $song->getAuthor();
+                                                                                    echo '" ';
+                                                                                    ?> required /><br></label>
+                        <label for="duration">Duracion<input type="number" name="duration" <?php
+                                                                                            echo 'value="';
+                                                                                            echo $song->getDuration();
+                                                                                            echo '" ';
+                                                                                            ?> /><br></label>
+                        <label for="mp3file">Subir archivo<input type="file" name="mp3file" /><br>
+                            <?php
+                            if ($song->getMp3File() !== '<no file>') {
+                                echo 'el archivo actual es ' . $song->getMp3File();
+                            } else {
+                                echo 'no tiene archivo mp3';
+                            }
+                            ?></label><br>
+                        <input type="hidden" name="id" <?php
+                                                        echo 'value="';
+                                                        echo $song->getId();
+                                                        echo '" ';
+                                                        ?>>
+                        <input type="submit" name="editSong" value="Terminar edición">
+                    </form>
+                </div>
+            </div>
+    <?php
+        }
+
+        echo ViewRepository::printEditSongsList();
+    }
+    ?>
+</body>
+
+</html>

@@ -9,6 +9,9 @@ class ViewRepository
         $s .=   '<a href="index.php?c=search&explore=1">Explorar playlists</a>';
         $s .=   '<a href="index.php?c=list&createList=1">Crear nueva lista</a>';
         $s .=   '<a href="index.php?c=song&createSong=1">Crear nueva canción</a>';
+        if ($_SESSION['user']->getRol() > 1) {
+            $s .= '<a href="index.php?c=song&editSongs=1">Editar canciones</a>';
+        }
         $s .=   '<a href="index.php?c=user&logout=1">LogOut</a>';
         $s .= '</nav>';
         return $s;
@@ -35,6 +38,7 @@ class ViewRepository
             $s .=   '</h2>';
             $s .=   '<h6>(canciones en la lista: ' . sizeof($list->getSongsIds()) . ')</h6>';
             $s .=   '<h6>(duración total: ' . ViewRepository::printDuration(PlaylistRepository::getPlaylistDuration($list->getId())) . ')</h6>';
+            $s .=       '<h6>Esta lista es favorita de: ' . $list->getFavs() . ' usuarios</h6>';
             $s .= '</div>';
         }
         return $s;
@@ -49,6 +53,7 @@ class ViewRepository
         $s .=       '<h2>Lista: ' . $list->getName() . '</h2>';
         $s .=       '<h3><i>creada por ' . UserRepository::getUserById($list->getCreator())->getName() . '</i></h3>';
         $s .=       '<h4>(canciones en la lista: ' . sizeof($list->getSongsIds()) . ')</h4>';
+        $s .=       '<p>Esta lista es favorita de: ' . $list->getFavs() . ' usuarios</p>';
         $s .=   '</div>';
         $s .=   '<ul>';
         $list->loadSongs();
@@ -66,7 +71,11 @@ class ViewRepository
         $s .=   '</ul>';
         if ($_SESSION['user']->getId() == $list->getCreator()) {
             $s .= '<a class="derecha" href="index.php?c=list&addSong=1&list=' . $list->getId() . '">Añadir canción</a><br>';
+        } else {
+            $s .= '<a class="derecha" href="index.php?c=list&clon=' . $list->getId() . '">Clonar lista</a><br>';
         }
+        $copias = PlaylistRepository::getNumberOfClones($list);
+        $s .= ($copias == 0)?'<p class="derecha">No hay copias de esta lista</p>':(($copias == 1)?'<p class="derecha">Hay 1 copia de esta lista</p>':'<p class="derecha">Hay '.$copias.' copias de esta lista</p>');
         $s .=   '<h4>(duración total: ';
         $s .= ViewRepository::printDuration(PlaylistRepository::getPlaylistDuration($list->getId()));
         $s .=   ')</h4>';
@@ -208,6 +217,17 @@ class ViewRepository
             $s .=  'audio.load(); audio.play();
                    }';
             $s .= '</script>';
+        }
+        return $s;
+    }
+
+    public static function printEditSongsList() {
+        $s = '';
+        $songsIds = SongRepository::getAllSongsIds();
+        foreach ($songsIds as $id_song) {
+            $song = SongRepository::getSongById($id_song);
+            $s .= $song->getTitle().' - '.$song->getAuthor();
+            $s .= '<a href="index.php?c=song&editSongs=1&edit='.$song->getId().'">Editar</a><br>';
         }
         return $s;
     }

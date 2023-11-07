@@ -1,0 +1,27 @@
+.background {
+  display: flex;
+  width: 100%;
+  min-height: 100%;
+  height: 100%;
+  overflow: overlay;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.editarCancion {
+  padding: 1em;
+}
+.editarCancion {
+  background-color: #f2f2e2;
+  width: 75vw;
+  min-height: fit-content;
+  margin: auto;
+}
+.editarCancion form input,
+.editarCancion form label {
+  margin: 5px;
+}
+.derecha {
+  float: right;
+}

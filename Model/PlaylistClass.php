@@ -38,11 +38,18 @@ class Playlist {
     public function getCreator() {
         return $this->creator;
     }
+    public function setCreator($id_user) {
+        $this->creator = $id_user;
+    }
     public function getDeleted() {
         return $this->deleted;
     }
     public function getSongsObjects() {
         return $this->songsObjects;
+    }
+
+    public function getFavs() {
+        return PlaylistRepository::countFavved($this);
     }
 
     public function loadSongs() {

@@ -78,10 +78,12 @@ a:hover {
 .fullView,
 .crearLista,
 .crearCancion,
+.editarCancion,
 .addSong {
   padding: 1em;
 }
-.fullView {
+.fullView,
+.editarCancion {
   background-color: #f2f2e2;
   width: 75vw;
   min-height: fit-content;
@@ -99,6 +101,7 @@ a:hover {
 }
 .crearLista,
 .crearCancion,
+.editarCancion,
 .addSong {
   background-color: #f2f2e2;
   display: block;
@@ -109,7 +112,9 @@ a:hover {
 .crearCancion form input,
 .crearCancion form label,
 .crearLista form input,
-.crearLista form label {
+.crearLista form label,
+.editarCancion form input,
+.editarCancion form label {
   margin: 5px;
 }
 .derecha {

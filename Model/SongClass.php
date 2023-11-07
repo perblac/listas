@@ -22,14 +22,26 @@ class Song {
     public function getTitle() {
         return $this->title;
     }
+    public function setTitle($newTitle) {
+        $this->title = $newTitle;
+    }
     public function getAuthor() {
         return $this->author;
+    }
+    public function setAuthor($newAuthor) {
+        $this->author = $newAuthor;
     }
     public function getDuration() {
         return $this->duration;
     }
+    public function setDuration($newDuration) {
+        $this->duration = $newDuration;
+    }
     public function getMp3File() {
         return $this->mp3file;
+    }
+    public function setMp3File($newMp3File) {
+        $this->mp3file = $newMp3File;
     }
     public function getCreator() {
         return $this->creator;
