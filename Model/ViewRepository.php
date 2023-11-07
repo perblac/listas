@@ -222,13 +222,15 @@ class ViewRepository
     }
 
     public static function printEditSongsList() {
-        $s = '';
+        $s = '<h3>Seleccione la canción que desea editar</h3>';
         $songsIds = SongRepository::getAllSongsIds();
+        $s .= '<div class="grid">';
         foreach ($songsIds as $id_song) {
             $song = SongRepository::getSongById($id_song);
-            $s .= $song->getTitle().' - '.$song->getAuthor();
-            $s .= '<a href="index.php?c=song&editSongs=1&edit='.$song->getId().'">Editar</a><br>';
+            $titulo = '<p class="titulo">'.$song->getTitle().' - '.$song->getAuthor().'</p>';
+            $s .= '<a href="index.php?c=song&editSongs=1&edit='.$song->getId().'">'.$titulo.'</a>';
         }
+        $s .= '</div>';
         return $s;
     }
 }
